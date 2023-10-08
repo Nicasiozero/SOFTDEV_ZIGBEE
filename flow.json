@@ -1,0 +1,371 @@
+[
+    {
+        "id": "91eb94a32326ed3e",
+        "type": "tab",
+        "label": "Flow 5",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "393d010f82c1f478",
+        "type": "mqtt in",
+        "z": "91eb94a32326ed3e",
+        "name": "",
+        "topic": "zigbee2mqtt/0x60a423fffe6b75d4",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3ea615dc8e145d4e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 310,
+        "y": 640,
+        "wires": [
+            [
+                "d7aa9f6f03b50175"
+            ]
+        ]
+    },
+    {
+        "id": "7062c4081a216d2d",
+        "type": "delay",
+        "z": "91eb94a32326ed3e",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "40",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 530,
+        "y": 180,
+        "wires": [
+            [
+                "c1a2556c79410f0f",
+                "494375afacac0601"
+            ]
+        ]
+    },
+    {
+        "id": "c1a2556c79410f0f",
+        "type": "function",
+        "z": "91eb94a32326ed3e",
+        "name": "COUNTER",
+        "func": "if(msg.payload == 50){\n    msg.payload = 0;\n}\nelse{\n    msg.payload = msg.payload + 1\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 280,
+        "wires": [
+            [
+                "7062c4081a216d2d"
+            ]
+        ]
+    },
+    {
+        "id": "eb22c5973c0d7049",
+        "type": "ui_chart",
+        "z": "91eb94a32326ed3e",
+        "name": "SIGNAL",
+        "group": "508b1638934b4499",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "SIGNAL",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "-2",
+        "ymax": "2",
+        "removeOlder": "10",
+        "removeOlderPoints": "1000",
+        "removeOlderUnit": "1",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#ff7f0e",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1280,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b1f101e017b4f00b",
+        "type": "inject",
+        "z": "91eb94a32326ed3e",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.02",
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 190,
+        "y": 180,
+        "wires": [
+            [
+                "7062c4081a216d2d"
+            ]
+        ]
+    },
+    {
+        "id": "d83ccaa3d29c9b86",
+        "type": "function",
+        "z": "91eb94a32326ed3e",
+        "name": "TRIANGLE WAVE",
+        "func": "var period = 50; // Number of samples per period (adjust as needed)\nvar amplitude = 1; // Amplitude of the triangle wave\n\n// Calculate the position within one period of the triangle wave\nvar positionInPeriod = (msg.payload % period) / period;\n\n// Calculate the value of the triangle wave at the given position\nvar triangleWaveValue = 2 * amplitude * (0.5 - Math.abs(positionInPeriod - 0.5));\n\nmsg.payload = triangleWaveValue;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 200,
+        "wires": [
+            [
+                "eb22c5973c0d7049"
+            ]
+        ]
+    },
+    {
+        "id": "7ac711d20ccf2cab",
+        "type": "function",
+        "z": "91eb94a32326ed3e",
+        "name": "SINE WAVE",
+        "func": "var x = msg.payload/50 * 360;\n\nmsg.payload = Math.sin(x* Math.PI/180)\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 160,
+        "wires": [
+            [
+                "eb22c5973c0d7049"
+            ]
+        ]
+    },
+    {
+        "id": "59204637ab0ebcdc",
+        "type": "function",
+        "z": "91eb94a32326ed3e",
+        "name": "SQUARE WAVE",
+        "func": "if(msg.payload <= (0.5 * 50)){\n    msg.payload = 1;\n}\nelse{\n    msg.payload = 0;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 120,
+        "wires": [
+            [
+                "eb22c5973c0d7049"
+            ]
+        ]
+    },
+    {
+        "id": "e69c0b9954114831",
+        "type": "function",
+        "z": "91eb94a32326ed3e",
+        "name": "SAWTOOTH WAVE",
+        "func": "var y = msg.payload/50 * 1;\nmsg.payload = y;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 240,
+        "wires": [
+            [
+                "eb22c5973c0d7049"
+            ]
+        ]
+    },
+    {
+        "id": "494375afacac0601",
+        "type": "switch",
+        "z": "91eb94a32326ed3e",
+        "name": "",
+        "property": "generator",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "square",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "sine",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "triangle",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "sawtooth",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 730,
+        "y": 180,
+        "wires": [
+            [
+                "59204637ab0ebcdc"
+            ],
+            [
+                "7ac711d20ccf2cab"
+            ],
+            [
+                "d83ccaa3d29c9b86"
+            ],
+            [
+                "e69c0b9954114831"
+            ]
+        ]
+    },
+    {
+        "id": "ce295d598f819aca",
+        "type": "change",
+        "z": "91eb94a32326ed3e",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "generator",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 830,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d7aa9f6f03b50175",
+        "type": "function",
+        "z": "91eb94a32326ed3e",
+        "name": "modeSelect",
+        "func": "var jsonData = msg.payload;\n\nvar action = jsonData.action;\n\n\nif (action == \"1_single\") {\n    msg.payload = \"square\";\n} \nelse if (action == \"2_single\") {\n    msg.payload = \"sine\";\n} \nelse if (action == \"3_single\") {\n    msg.payload = \"triangle\";\n} \nelse if (action == \"4_single\") {\n    msg.payload = \"sawtooth\";\n} \n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 640,
+        "wires": [
+            [
+                "ce295d598f819aca"
+            ]
+        ]
+    },
+    {
+        "id": "3ea615dc8e145d4e",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "127.0.0.1",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "2",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "508b1638934b4499",
+        "type": "ui_group",
+        "name": "Group 1",
+        "tab": "a29c4841ac3e7080",
+        "order": 1,
+        "disp": true,
+        "width": 15
+    },
+    {
+        "id": "a29c4841ac3e7080",
+        "type": "ui_tab",
+        "name": "Tab 5",
+        "icon": "dashboard",
+        "order": 5
+    }
+]
